@@ -1,10 +1,7 @@
 package frontend;
 
 import backend.CanvasState;
-import backend.model.Circle;
-import backend.model.Figure;
-import backend.model.Point;
-import backend.model.Rectangle;
+import backend.model.*;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -28,7 +25,7 @@ public class PaintPane extends BorderPane {
 
 	// Botones Barra Izquierda
 	ToggleButton selectionButton = new ToggleButton("Seleccionar");
-	FigureButton rectangleButton = new FigureButton("Rectangulo") {
+	FigureButton rectangleButton = new FigureButton("Rectángulo") {
 		@Override
 		public Figure create(Point start, Point end) {
 			try {
@@ -39,10 +36,33 @@ public class PaintPane extends BorderPane {
 			}
 		}
 	};
-	FigureButton circleButton = new FigureButton("Circulo") {
+	FigureButton circleButton = new FigureButton("Círculo") {
 		@Override
 		public Figure create(Point start, Point end) {
 			return new Circle(start, start.distanceTo(end));
+		}
+	};
+	FigureButton squareButton = new FigureButton("Cuadrado") {
+		@Override
+		public Figure create(Point start, Point end) {
+			try {
+				return new Square(start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
+			}
+			catch (RuntimeException e){
+				return null;
+			}
+		}
+	};
+	FigureButton ellipseButton = new FigureButton("Elipse") {
+		@Override
+		public Figure create(Point start, Point end) {
+			return new Ellipse(start, Math.abs(start.getX() - end.getX()), Math.abs(start.getY() - end.getY()));
+		}
+	};
+	FigureButton lineButton = new FigureButton("Línea") {
+		@Override
+		public Figure create(Point start, Point end) {
+			return new Line(start, end);
 		}
 	};
 
@@ -61,7 +81,7 @@ public class PaintPane extends BorderPane {
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
-		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton};
+		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, lineButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
 			tool.setMinWidth(90);
