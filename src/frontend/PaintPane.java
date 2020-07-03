@@ -28,8 +28,21 @@ public class PaintPane extends BorderPane {
 
 	// Botones Barra Izquierda
 	ToggleButton selectionButton = new ToggleButton("Seleccionar");
-	ToggleButton rectangleButton = new ToggleButton("Rectángulo");
-	ToggleButton circleButton = new ToggleButton("Círculo");
+	FigureButton rectangleButton = new FigureButton("Rectangulo") {
+		@Override
+		public Figure create(Point start, Point end) {
+			return new Rectangle(start, end);
+		}
+	};
+	FigureButton circleButton = new FigureButton("Circulo") {
+		@Override
+		public Figure create(Point start, Point end) {
+			return new Circle(start, Math.abs(end.getX() - start.getX()));
+		}
+	};
+
+	//Seleccionar un botón
+	FigureButton selectedButton;
 
 	// Dibujar una figura
 	Point startPoint;
@@ -146,5 +159,20 @@ public class PaintPane extends BorderPane {
 			gc.setFill(fillColor);
 			figure.drawSelf(gc);
 		}
+	}
+
+	private abstract class FigureButton extends ToggleButton {
+		FigureButton(String text) {
+			super(text);
+		}
+
+		public abstract Figure create(Point start, Point end);
+
+		@Override
+		public void fire() {
+			super.fire();
+			selectedButton = selectedButton != this? this: null;
+		}
+
 	}
 }
