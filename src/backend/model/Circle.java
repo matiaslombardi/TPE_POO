@@ -11,6 +11,12 @@ public class Circle extends Figure {
     }
 
     @Override
+    public boolean contains(Point point) {
+        return Math.sqrt(Math.pow(centerPoint.getX() - point.getX(), 2) +
+                Math.pow(centerPoint.getY() - point.getY(), 2)) < radius;
+    }
+
+    @Override
     public String toString() {
         return String.format("Círculo [Centro: %s, Radio: %.2f]", centerPoint, radius);
     }
