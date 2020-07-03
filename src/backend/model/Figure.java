@@ -13,6 +13,6 @@ public abstract class Figure implements Movable {
         }
     }
 
-    abstract void drawSelf(GraphicsContext gc);
+    public abstract void drawSelf(GraphicsContext gc);
 
 }

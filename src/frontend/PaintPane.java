@@ -144,14 +144,7 @@ public class PaintPane extends BorderPane {
 				gc.setStroke(lineColor);
 			}
 			gc.setFill(fillColor);
-			if(figure instanceof Rectangle) {
-				Rectangle rectangle = (Rectangle) figure;
-				rectangle.drawSelf(gc);
-			}
-			else if(figure instanceof Circle) {
-				Circle circle = (Circle) figure;
-				circle.drawSelf(gc);
-			}
+			figure.drawSelf(gc);
 		}
 	}
 }
