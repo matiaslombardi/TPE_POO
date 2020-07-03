@@ -29,4 +29,8 @@ public class Circle extends Figure {
         return radius;
     }
 
+    @Override
+    public void move(int diffX, int diffY) {
+        centerPoint.move(diffX, diffY);
+    }
 }
