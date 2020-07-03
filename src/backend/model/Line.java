@@ -20,11 +20,18 @@ public class Line extends Figure {
     @Override
     public boolean contains(Point point) {
         double intercept = startPoint.getY() - slope * startPoint.getX(); // ordenada al origen
-        return Double.compare(point.getY(), intercept + slope * point.getX()) == 0;
+        double cmp = point.getY() - intercept - slope * point.getX();
+        return cmp > -1 && cmp < 1;
     }
 
     @Override
     public void drawSelf(GraphicsContext gc) {
         gc.strokeLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
+    }
+
+    @Override
+    public String toString() {
+
+        return String.format("Línea [ %s , %s ]", startPoint, endPoint);
     }
 }
