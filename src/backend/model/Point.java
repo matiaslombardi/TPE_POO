@@ -8,6 +8,11 @@ public class Point implements Movable {
         this.x = x;
         this.y = y;
     }
+    public double distanceTo(Point other){
+        double xAxis = Math.abs(other.x - this.x);
+        double yAxis = Math.abs(other.y - this.y);
+        return Math.sqrt(Math.pow(xAxis,2) + Math.pow(yAxis,2));
+    }
 
     public double getX() {
         return x;

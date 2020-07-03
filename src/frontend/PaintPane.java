@@ -31,13 +31,18 @@ public class PaintPane extends BorderPane {
 	FigureButton rectangleButton = new FigureButton("Rectangulo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Rectangle(start, end);
+			try {
+				return new Rectangle(start, end);
+			}
+			catch (RuntimeException e){
+				return null;
+			}
 		}
 	};
 	FigureButton circleButton = new FigureButton("Circulo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Circle(start, Math.abs(end.getX() - start.getX()));
+			return new Circle(start, start.distanceTo(end));
 		}
 	};
 
@@ -77,20 +82,12 @@ public class PaintPane extends BorderPane {
 			if(startPoint == null) {
 				return ;
 			}
-			if(endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
-				return ;
-			}
 			Figure newFigure = null;
-			if(rectangleButton.isSelected()) {
-				newFigure = new Rectangle(startPoint, endPoint);
+			if (selectedButton != null) {
+				newFigure = selectedButton.create(startPoint, endPoint);
 			}
-			else if(circleButton.isSelected()) {
-				double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-				newFigure = new Circle(startPoint, circleRadius);
-			} else {
-				return ;
-			}
-			canvasState.addFigure(newFigure);
+			if(newFigure != null)
+				canvasState.addFigure(newFigure);
 			startPoint = null;
 			redrawCanvas();
 		});
