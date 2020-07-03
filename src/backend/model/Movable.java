@@ -1,5 +1,5 @@
 package backend.model;
 
 public interface Movable {
-    void move(int diffX, int diffY);
+    void move(double diffX, double diffY);
 }

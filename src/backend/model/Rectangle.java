@@ -23,14 +23,14 @@ public class Rectangle extends Figure {
     }
 
     @Override
+    Point[] getPoints() {
+        return new Point[]{topLeft,bottomRight};
+    }
+
+    @Override
     public boolean contains(Point point) {
         return point.getX() > topLeft.getX() && point.getX() < bottomRight.getX() &&
                 point.getY() > topLeft.getY() && point.getY() < bottomRight.getY();
     }
 
-    @Override
-    public void move(int diffX, int diffY) {
-        topLeft.move(diffX, diffY);
-        bottomRight.move(diffX, diffY);
-    }
 }

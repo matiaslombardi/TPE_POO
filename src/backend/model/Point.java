@@ -18,7 +18,7 @@ public class Point implements Movable {
     }
 
     @Override
-    public void move(int diffX, int diffY) {
+    public void move(double diffX, double diffY) {
         x += diffX;
         y += diffY;
     }

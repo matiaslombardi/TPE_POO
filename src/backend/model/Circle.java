@@ -11,6 +11,11 @@ public class Circle extends Figure {
     }
 
     @Override
+    Point[] getPoints() {
+        return new Point[]{centerPoint};
+    }
+
+    @Override
     public boolean contains(Point point) {
         return Math.sqrt(Math.pow(centerPoint.getX() - point.getX(), 2) +
                 Math.pow(centerPoint.getY() - point.getY(), 2)) < radius;
@@ -29,8 +34,4 @@ public class Circle extends Figure {
         return radius;
     }
 
-    @Override
-    public void move(int diffX, int diffY) {
-        centerPoint.move(diffX, diffY);
-    }
 }
