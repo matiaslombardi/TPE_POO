@@ -1,5 +1,7 @@
 package backend.model;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public class Rectangle extends Figure {
 
     private final Point topLeft, bottomRight;
@@ -31,6 +33,14 @@ public class Rectangle extends Figure {
     public boolean contains(Point point) {
         return point.getX() > topLeft.getX() && point.getX() < bottomRight.getX() &&
                 point.getY() > topLeft.getY() && point.getY() < bottomRight.getY();
+    }
+
+    @Override
+    public void drawSelf(GraphicsContext gc){
+        gc.fillRect(this.getTopLeft().getX(), this.getTopLeft().getY(),
+                Math.abs(this.getTopLeft().getX() - this.getBottomRight().getX()), Math.abs(this.getTopLeft().getY() - this.getBottomRight().getY()));
+        gc.strokeRect(this.getTopLeft().getX(), this.getTopLeft().getY(),
+                Math.abs(this.getTopLeft().getX() - this.getBottomRight().getX()), Math.abs(this.getTopLeft().getY() - this.getBottomRight().getY()));
     }
 
 }

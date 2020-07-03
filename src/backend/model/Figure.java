@@ -1,5 +1,7 @@
 package backend.model;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public abstract class Figure implements Movable {
     abstract Point[] getPoints();
     public abstract boolean contains(Point point);
@@ -10,4 +12,7 @@ public abstract class Figure implements Movable {
             point.move(diffX,diffY);
         }
     }
+
+    abstract void drawSelf(GraphicsContext gc);
+
 }
