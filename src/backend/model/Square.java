@@ -1,11 +1,12 @@
 package backend.model;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Square extends Rectangle {
 
-    public Square(Point topLeft, Point bottomRight) {
-        super(topLeft, bottomRight);
+    public Square(Color borderColor, double borderWidth, Point topLeft, Point bottomRight) {
+        super(borderColor, borderWidth, topLeft, bottomRight);
     }
 
     @Override

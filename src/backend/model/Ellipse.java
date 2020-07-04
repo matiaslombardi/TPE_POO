@@ -1,13 +1,15 @@
 package backend.model;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Ellipse extends Figure {
 
     private final double radiusX, radiusY;
     private final Point centerPoint;
 
-    public Ellipse(Point centerPoint, double radiusX, double radiusY) {
+    public Ellipse(Color borderColor, double borderWidth, Point centerPoint, double radiusX, double radiusY) {
+        super(borderColor, borderWidth);
         this.centerPoint = centerPoint;
         this.radiusX = radiusX;
         this.radiusY = radiusY;

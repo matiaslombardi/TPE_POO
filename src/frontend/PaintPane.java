@@ -2,10 +2,14 @@ package frontend;
 
 import backend.CanvasState;
 import backend.model.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
@@ -29,21 +33,21 @@ public class PaintPane extends BorderPane {
 		@Override
 		public Figure create(Point start, Point end) {
 			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Rectangle(start, end);
+				return new Rectangle(colorPicker.getValue(), slider.getValue(), start, end);
 			return null;
 		}
 	};
 	FigureButton circleButton = new FigureButton("Círculo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Circle(start, start.distanceTo(end));
+			return new Circle(colorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
 		}
 	};
 	FigureButton squareButton = new FigureButton("Cuadrado") {
 		@Override
 		public Figure create(Point start, Point end) {
 			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Square(start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
+				return new Square(colorPicker.getValue(), slider.getValue(), start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
 			return null;
 		}
 	};
@@ -54,7 +58,7 @@ public class PaintPane extends BorderPane {
 				double diffX = end.getX() - start.getX();
 				double diffY = end.getY() - start.getY();
 				Point center = new Point(end.getX() - diffX / 2, end.getY() - diffY / 2);
-				return new Ellipse(center, diffX / 2, diffY / 2);
+				return new Ellipse(colorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
 			}
 			return null;
 		}
@@ -62,9 +66,13 @@ public class PaintPane extends BorderPane {
 	FigureButton lineButton = new FigureButton("Línea") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Line(start, end);
+			return new Line(colorPicker.getValue(), slider.getValue(), start, end);
 		}
 	};
+
+	final ColorPicker colorPicker = new ColorPicker(Color.BLACK);
+
+	Slider slider = new Slider(1, 50, 25);
 
 	//Seleccionar un botón
 	FigureButton selectedButton;
@@ -81,6 +89,18 @@ public class PaintPane extends BorderPane {
 	public PaintPane(CanvasState canvasState, StatusPane statusPane) {
 		this.canvasState = canvasState;
 		this.statusPane = statusPane;
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+		slider.valueProperty().addListener((ov, oldValue, newValue) -> {
+			if (selectedFigure != null)
+				selectedFigure.setBorderWidth(newValue.doubleValue());
+		});
+		colorPicker.setOnAction(event -> {
+			if(selectedFigure != null) {
+				Color c = colorPicker.getValue();
+				selectedFigure.setBorderColor(c);
+			}
+		});
 		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, lineButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
@@ -90,6 +110,8 @@ public class PaintPane extends BorderPane {
 		}
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
+		buttonsBox.getChildren().add(slider);
+		buttonsBox.getChildren().add(colorPicker);
 		buttonsBox.setPadding(new Insets(5));
 		buttonsBox.setStyle("-fx-background-color: #999");
 		buttonsBox.setPrefWidth(100);
@@ -169,7 +191,8 @@ public class PaintPane extends BorderPane {
 			if(figure == selectedFigure) {
 				gc.setStroke(Color.RED);
 			} else {
-				gc.setStroke(lineColor);
+				gc.setStroke(figure.getBorderColor());
+				gc.setLineWidth(figure.getBorderWidth());
 			}
 			gc.setFill(fillColor);
 			figure.drawSelf(gc);
@@ -186,7 +209,7 @@ public class PaintPane extends BorderPane {
 		@Override
 		public void fire() {
 			super.fire();
-			selectedButton = selectedButton != this? this: null;
+			selectedButton = this.isSelected()? this: null;
 		}
 
 	}
