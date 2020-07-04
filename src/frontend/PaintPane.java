@@ -8,10 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -33,21 +30,21 @@ public class PaintPane extends BorderPane {
 		@Override
 		public Figure create(Point start, Point end) {
 			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Rectangle(colorPicker.getValue(), slider.getValue(), start, end);
+				return new Rectangle(borderColorPicker.getValue(), slider.getValue(), start, end);
 			return null;
 		}
 	};
 	FigureButton circleButton = new FigureButton("Círculo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Circle(colorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
+			return new Circle(borderColorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
 		}
 	};
 	FigureButton squareButton = new FigureButton("Cuadrado") {
 		@Override
 		public Figure create(Point start, Point end) {
 			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Square(colorPicker.getValue(), slider.getValue(), start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
+				return new Square(borderColorPicker.getValue(), slider.getValue(), start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
 			return null;
 		}
 	};
@@ -58,7 +55,7 @@ public class PaintPane extends BorderPane {
 				double diffX = end.getX() - start.getX();
 				double diffY = end.getY() - start.getY();
 				Point center = new Point(end.getX() - diffX / 2, end.getY() - diffY / 2);
-				return new Ellipse(colorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
+				return new Ellipse(borderColorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
 			}
 			return null;
 		}
@@ -66,14 +63,15 @@ public class PaintPane extends BorderPane {
 	FigureButton lineButton = new FigureButton("Línea") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Line(colorPicker.getValue(), slider.getValue(), start, end);
+			return new Line(borderColorPicker.getValue(), slider.getValue(), start, end);
 		}
 	};
 
-	final ColorPicker colorPicker = new ColorPicker(Color.BLACK);
+	Label borderLabel = new Label("Borde");
+	final ColorPicker borderColorPicker = new ColorPicker(Color.BLACK);
 
 	Slider slider = new Slider(1, 50, 25);
-
+	Label fillLabel = new Label("Relleno");
 	//Seleccionar un botón
 	FigureButton selectedButton;
 
@@ -95,9 +93,9 @@ public class PaintPane extends BorderPane {
 			if (selectedFigure != null)
 				selectedFigure.setBorderWidth(newValue.doubleValue());
 		});
-		colorPicker.setOnAction(event -> {
+		borderColorPicker.setOnAction(event -> {
 			if(selectedFigure != null) {
-				Color c = colorPicker.getValue();
+				Color c = borderColorPicker.getValue();
 				selectedFigure.setBorderColor(c);
 			}
 		});
@@ -110,8 +108,7 @@ public class PaintPane extends BorderPane {
 		}
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
-		buttonsBox.getChildren().add(slider);
-		buttonsBox.getChildren().add(colorPicker);
+		buttonsBox.getChildren().addAll(borderLabel,slider,borderColorPicker,fillLabel);
 		buttonsBox.setPadding(new Insets(5));
 		buttonsBox.setStyle("-fx-background-color: #999");
 		buttonsBox.setPrefWidth(100);
