@@ -28,12 +28,9 @@ public class PaintPane extends BorderPane {
 	FigureButton rectangleButton = new FigureButton("Rectángulo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			try {
+			if(start.getX() < end.getX() && start.getY() < end.getY())
 				return new Rectangle(start, end);
-			}
-			catch (RuntimeException e){
-				return null;
-			}
+			return null;
 		}
 	};
 	FigureButton circleButton = new FigureButton("Círculo") {
@@ -45,18 +42,21 @@ public class PaintPane extends BorderPane {
 	FigureButton squareButton = new FigureButton("Cuadrado") {
 		@Override
 		public Figure create(Point start, Point end) {
-			try {
+			if(start.getX() < end.getX() && start.getY() < end.getY())
 				return new Square(start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
-			}
-			catch (RuntimeException e){
-				return null;
-			}
+			return null;
 		}
 	};
 	FigureButton ellipseButton = new FigureButton("Elipse") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Ellipse(start, Math.abs(start.getX() - end.getX()), Math.abs(start.getY() - end.getY()));
+			if(start.getX() < end.getX() && start.getY() < end.getY()) {
+				double diffX = end.getX() - start.getX();
+				double diffY = end.getY() - start.getY();
+				Point center = new Point(end.getX() - diffX / 2, end.getY() - diffY / 2);
+				return new Ellipse(center, diffX / 2, diffY / 2);
+			}
+			return null;
 		}
 	};
 	FigureButton lineButton = new FigureButton("Línea") {
@@ -94,9 +94,7 @@ public class PaintPane extends BorderPane {
 		buttonsBox.setStyle("-fx-background-color: #999");
 		buttonsBox.setPrefWidth(100);
 		gc.setLineWidth(1);
-		canvas.setOnMousePressed(event -> {
-			startPoint = new Point(event.getX(), event.getY());
-		});
+		canvas.setOnMousePressed(event -> startPoint = new Point(event.getX(), event.getY()));
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
 			if(startPoint == null) {

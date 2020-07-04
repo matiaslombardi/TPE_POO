@@ -4,8 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Ellipse extends Figure {
 
-    private double radiusX, radiusY;
-    private Point centerPoint;
+    private final double radiusX, radiusY;
+    private final Point centerPoint;
 
     public Ellipse(Point centerPoint, double radiusX, double radiusY) {
         this.centerPoint = centerPoint;

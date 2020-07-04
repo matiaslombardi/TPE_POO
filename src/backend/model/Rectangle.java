@@ -2,15 +2,12 @@ package backend.model;
 
 import javafx.scene.canvas.GraphicsContext;
 
-import java.security.InvalidParameterException;
 
 public class Rectangle extends Figure {
 
     private final Point topLeft, bottomRight;
 
     public Rectangle(Point topLeft, Point bottomRight) {
-        if(topLeft.getX() > bottomRight.getX() || topLeft.getY() > bottomRight.getY())
-            throw new IllegalArgumentException();
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
     }
