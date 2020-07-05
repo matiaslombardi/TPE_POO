@@ -93,6 +93,11 @@ public class PaintPane extends BorderPane {
 			if (selectedFigure != null)
 				selectedFigure.setBorderWidth(newValue.doubleValue());
 		});
+		slider.setOnMouseDragged(event -> {
+		    if(selectedFigure != null)
+		        selectedFigure.setBorderWidth(slider.getValue());
+		    redrawCanvas();
+        });
 		borderColorPicker.setOnAction(event -> {
 			if(selectedFigure != null) {
 				Color c = borderColorPicker.getValue();
@@ -189,9 +194,9 @@ public class PaintPane extends BorderPane {
 				gc.setStroke(Color.RED);
 			} else {
 				gc.setStroke(figure.getBorderColor());
-				gc.setLineWidth(figure.getBorderWidth());
 			}
-			gc.setFill(fillColor);
+            gc.setLineWidth(figure.getBorderWidth());
+            gc.setFill(fillColor);
 			figure.drawSelf(gc);
 		}
 	}
