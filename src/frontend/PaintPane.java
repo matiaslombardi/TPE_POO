@@ -128,7 +128,27 @@ public class PaintPane extends BorderPane {
 		buttonsBox.setStyle("-fx-background-color: #999");
 		buttonsBox.setPrefWidth(100);
 		gc.setLineWidth(1);
-		canvas.setOnMousePressed(event -> startPoint = new Point(event.getX(), event.getY()));
+		canvas.setOnMousePressed(event -> {
+			startPoint = new Point(event.getX(), event.getY());
+			if(selectionButton.isSelected()) {
+				boolean found = false;
+				StringBuilder label = new StringBuilder("Se seleccionó: ");
+				for (Figure figure : canvasState.figures()) {
+					if(figure.contains(startPoint)) {
+						found = true;
+						selectedFigure = figure;
+						label.append(figure.toString());
+					}
+				}
+				if (found) {
+					statusPane.updateStatus(label.toString());
+				} else {
+					selectedFigure = null;
+					statusPane.updateStatus("Ninguna figura encontrada");
+				}
+				redrawCanvas();
+			}
+		});
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
 			if(startPoint == null) {
@@ -160,27 +180,6 @@ public class PaintPane extends BorderPane {
 			}
 		});
 
-		canvas.setOnMouseClicked(event -> {
-			if(selectionButton.isSelected()) {
-				Point eventPoint = new Point(event.getX(), event.getY());
-				boolean found = false;
-				StringBuilder label = new StringBuilder("Se seleccionó: ");
-				for (Figure figure : canvasState.figures()) {
-					if(figure.contains(eventPoint)) {
-						found = true;
-						selectedFigure = figure;
-						label.append(figure.toString());
-					}
-				}
-				if (found) {
-					statusPane.updateStatus(label.toString());
-				} else {
-					selectedFigure = null;
-					statusPane.updateStatus("Ninguna figura encontrada");
-				}
-				redrawCanvas();
-			}
-		});
 		canvas.setOnMouseDragged(event -> {
 			if(selectionButton.isSelected()) {
 				Point eventPoint = new Point(event.getX(), event.getY());
@@ -188,8 +187,8 @@ public class PaintPane extends BorderPane {
 				double diffY = (eventPoint.getY() - startPoint.getY());
 				if(selectedFigure != null) {
 					selectedFigure.move(diffX,diffY);
+					startPoint = eventPoint;
 				}
-				startPoint = eventPoint;
 				redrawCanvas();
 			}
 		});
