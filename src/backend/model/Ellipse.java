@@ -8,8 +8,8 @@ public class Ellipse extends Figure {
     private final double radiusX, radiusY;
     private final Point centerPoint;
 
-    public Ellipse(Color borderColor, double borderWidth, Point centerPoint, double radiusX, double radiusY) {
-        super(borderColor, borderWidth);
+    public Ellipse(Color fillColor, Color borderColor, double borderWidth, Point centerPoint, double radiusX, double radiusY) {
+        super(fillColor, borderColor, borderWidth);
         this.centerPoint = centerPoint;
         this.radiusX = radiusX;
         this.radiusY = radiusY;

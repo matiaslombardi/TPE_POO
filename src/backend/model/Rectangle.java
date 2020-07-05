@@ -7,8 +7,8 @@ public class Rectangle extends Figure {
 
     private final Point topLeft, bottomRight;
 
-    public Rectangle(Color borderColor, double borderWidth, Point topLeft, Point bottomRight) {
-        super(borderColor, borderWidth);
+    public Rectangle(Color fillColor, Color borderColor, double borderWidth, Point topLeft, Point bottomRight) {
+        super(fillColor, borderColor, borderWidth);
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
     }

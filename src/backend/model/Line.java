@@ -7,8 +7,8 @@ public class Line extends Figure {
     private final Point startPoint, endPoint;
     private final double slope;
 
-    public Line(Color borderColor, double borderWidth, Point startPoint, Point endPoint) {
-        super(borderColor, borderWidth);
+    public Line(Color fillColor, Color borderColor, double borderWidth, Point startPoint, Point endPoint) {
+        super(fillColor, borderColor, borderWidth);//FillColor is temporary
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.slope = (endPoint.getY() - startPoint.getY()) / (endPoint.getX() - startPoint.getX());
