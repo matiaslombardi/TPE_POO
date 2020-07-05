@@ -30,21 +30,21 @@ public class PaintPane extends BorderPane {
 		@Override
 		public Figure create(Point start, Point end) {
 			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Rectangle(borderColorPicker.getValue(), slider.getValue(), start, end);
+				return new Rectangle(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
 			return null;
 		}
 	};
 	FigureButton circleButton = new FigureButton("Círculo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Circle(borderColorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
+			return new Circle(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
 		}
 	};
 	FigureButton squareButton = new FigureButton("Cuadrado") {
 		@Override
 		public Figure create(Point start, Point end) {
 			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Square(borderColorPicker.getValue(), slider.getValue(), start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
+				return new Square(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
 			return null;
 		}
 	};
@@ -55,7 +55,7 @@ public class PaintPane extends BorderPane {
 				double diffX = end.getX() - start.getX();
 				double diffY = end.getY() - start.getY();
 				Point center = new Point(end.getX() - diffX / 2, end.getY() - diffY / 2);
-				return new Ellipse(borderColorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
+				return new Ellipse(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
 			}
 			return null;
 		}
@@ -63,12 +63,14 @@ public class PaintPane extends BorderPane {
 	FigureButton lineButton = new FigureButton("Línea") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Line(borderColorPicker.getValue(), slider.getValue(), start, end);
+			return new Line(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
 		}
 	};
 
 	Label borderLabel = new Label("Borde");
-	final ColorPicker borderColorPicker = new ColorPicker(Color.BLACK);
+	final ColorPicker borderColorPicker = new ColorPicker(lineColor);
+
+	final ColorPicker fillColorPicker = new ColorPicker(fillColor);
 
 	Slider slider = new Slider(1, 50, 25);
 	Label fillLabel = new Label("Relleno");
@@ -94,16 +96,24 @@ public class PaintPane extends BorderPane {
 				selectedFigure.setBorderWidth(newValue.doubleValue());
 		});
 		slider.setOnMouseDragged(event -> {
-		    if(selectedFigure != null)
-		        selectedFigure.setBorderWidth(slider.getValue());
-		    redrawCanvas();
+		    if(selectedFigure != null) {
+				selectedFigure.setBorderWidth(slider.getValue());
+				redrawCanvas();
+			}
         });
 		borderColorPicker.setOnAction(event -> {
-			if(selectedFigure != null) {
-				Color c = borderColorPicker.getValue();
-				selectedFigure.setBorderColor(c);
-			}
+			if(selectedFigure != null)
+				selectedFigure.setBorderColor(borderColorPicker.getValue());
 		});
+
+		fillColorPicker.setOnAction(event -> {
+			if(selectedFigure != null) {
+				selectedFigure.setFillColor(fillColorPicker.getValue());
+				redrawCanvas();
+			}
+
+		});
+		selectionButton.setOnAction(event -> selectedButton = null);
 		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, lineButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
@@ -113,7 +123,7 @@ public class PaintPane extends BorderPane {
 		}
 		VBox buttonsBox = new VBox(10);
 		buttonsBox.getChildren().addAll(toolsArr);
-		buttonsBox.getChildren().addAll(borderLabel,slider,borderColorPicker,fillLabel);
+		buttonsBox.getChildren().addAll(borderLabel, slider, borderColorPicker, fillLabel, fillColorPicker);
 		buttonsBox.setPadding(new Insets(5));
 		buttonsBox.setStyle("-fx-background-color: #999");
 		buttonsBox.setPrefWidth(100);
@@ -196,7 +206,7 @@ public class PaintPane extends BorderPane {
 				gc.setStroke(figure.getBorderColor());
 			}
             gc.setLineWidth(figure.getBorderWidth());
-            gc.setFill(fillColor);
+            gc.setFill(figure.getFillColor());
 			figure.drawSelf(gc);
 		}
 	}
