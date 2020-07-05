@@ -13,19 +13,23 @@ public abstract class Figure implements Movable {
     private static int getAndIncrement(){
         return idCounter++;
     }
-    private Color borderColor;
-    private double borderWidth;
+    private Color borderColor = Color.BLACK;
+    private double borderWidth = 25;
 
-    private Color fillColor;
+    private Color fillColor = Color.YELLOW;
     abstract Point[] getPoints();
     public abstract boolean contains(Point point);
     public abstract boolean isContained(Rectangle rectangle);
 
     public Figure(Color fillColor, Color borderColor, double borderWidth) {
-        this.id = getAndIncrement();
+        this();
         this.fillColor = fillColor;
         this.borderColor = borderColor;
         this.borderWidth = borderWidth;
+    }
+
+    public Figure() {
+        id = getAndIncrement();
     }
 
     @Override

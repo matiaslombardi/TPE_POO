@@ -111,7 +111,7 @@ public class PaintPane extends BorderPane {
 
 		fillColorPicker.setOnAction(event -> {
 			if( !selectedFigures.isEmpty() ) {
-				selectedFigures.forEach(figure -> figure.setBorderColor(fillColorPicker.getValue()));
+				selectedFigures.forEach(figure -> figure.setFillColor(fillColorPicker.getValue()));
 				redrawCanvas();
 			}
 
@@ -132,11 +132,22 @@ public class PaintPane extends BorderPane {
 		buttonsBox.setPrefWidth(100);
 		gc.setLineWidth(1);
 		canvas.setOnMousePressed(event -> {
+			System.out.println("Pressed");
 			startPoint = new Point(event.getX(), event.getY());
-			Figure last = null;
-			selectedFigures.clear();
-			if(selectionButton.isSelected()) {
+		});
+		canvas.setOnMouseReleased(event -> {
+			Point endPoint = new Point(event.getX(), event.getY());
+			if(startPoint == null) {
+				return ;
+			}
+			if (selectionButton.isSelected() && startPoint.getX() < endPoint.getX() && startPoint.getY() < endPoint.getY()) {
+				Rectangle selection = new Rectangle(startPoint, endPoint);
+				canvasState.figures().forEach(figure -> {
+					if (figure.isContained(selection)) selectedFigures.add(figure);
+				});
+			} else if (selectionButton.isSelected() && startPoint.equals(endPoint)) {
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
+				Figure last = null;
 				for (Figure figure : canvasState.figures()) {
 					if(figure.contains(startPoint)) {
 						last = figure;
@@ -148,14 +159,9 @@ public class PaintPane extends BorderPane {
 					statusPane.updateStatus(label.toString());
 				} else {
 					statusPane.updateStatus("Ninguna figura encontrada");
+					selectedFigures.clear();
 				}
 				redrawCanvas();
-			}
-		});
-		canvas.setOnMouseReleased(event -> {
-			Point endPoint = new Point(event.getX(), event.getY());
-			if(startPoint == null) {
-				return ;
 			}
 			Figure newFigure = null;
 			if (selectedButton != null) {
@@ -163,6 +169,7 @@ public class PaintPane extends BorderPane {
 			}
 			if(newFigure != null)
 				canvasState.addFigure(newFigure);
+			System.out.println("Released");
 			startPoint = null;
 			redrawCanvas();
 		});

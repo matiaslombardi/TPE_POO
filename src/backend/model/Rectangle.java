@@ -13,6 +13,12 @@ public class Rectangle extends Figure {
         this.bottomRight = bottomRight;
     }
 
+    public Rectangle(Point topLeft, Point bottomRight) {
+        super();
+        this.topLeft = topLeft;
+        this.bottomRight = bottomRight;
+    }
+
     public Point getTopLeft() {
         return topLeft;
     }
