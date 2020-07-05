@@ -38,6 +38,11 @@ public class Rectangle extends Figure {
     }
 
     @Override
+    public boolean isContained(Rectangle rectangle) {
+        return rectangle.contains(topLeft) && rectangle.contains(bottomRight);
+    }
+
+    @Override
     public void drawSelf(GraphicsContext gc){
         gc.fillRect(this.getTopLeft().getX(), this.getTopLeft().getY(),
                 Math.abs(this.getTopLeft().getX() - this.getBottomRight().getX()), Math.abs(this.getTopLeft().getY() - this.getBottomRight().getY()));

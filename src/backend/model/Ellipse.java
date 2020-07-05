@@ -30,6 +30,16 @@ public class Ellipse extends Figure {
     }
 
     @Override
+    public boolean isContained(Rectangle rectangle) {
+        Point left = new Point(centerPoint.getX() - radiusX, centerPoint.getY());
+        Point right = new Point(centerPoint.getX() + radiusX, centerPoint.getY());
+        Point up = new Point(centerPoint.getX(), centerPoint.getY() + radiusY);
+        Point down = new Point(centerPoint.getX(), centerPoint.getY() - radiusY);
+        return rectangle.contains(left) && rectangle.contains(right)
+                && rectangle.contains(up) && rectangle.contains(down);
+    }
+
+    @Override
     public void drawSelf(GraphicsContext gc) {
         gc.fillOval(centerPoint.getX() - radiusX, centerPoint.getY() - radiusY, 2*radiusX, 2*radiusY);
         gc.strokeOval(centerPoint.getX() - radiusX, centerPoint.getY() - radiusY, 2*radiusX, 2*radiusY);

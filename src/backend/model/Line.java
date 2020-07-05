@@ -27,6 +27,11 @@ public class Line extends Figure {
     }
 
     @Override
+    public boolean isContained(Rectangle rectangle) {
+        return rectangle.contains(startPoint) && rectangle.contains(endPoint);
+    }
+
+    @Override
     public void drawSelf(GraphicsContext gc) {
         gc.strokeLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
     }
