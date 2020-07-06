@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Line extends Figure {
+    private static final int DELTA = 1;
     private final Point startPoint, endPoint;
     private final double slope;
 
@@ -21,9 +22,13 @@ public class Line extends Figure {
 
     @Override
     public boolean contains(Point point) {
-        double intercept = startPoint.getY() - slope * startPoint.getX(); // ordenada al origen
-        double cmp = point.getY() - intercept - slope * point.getX();
-        return cmp > -1 && cmp < 1;
+        if( (point.getX() > startPoint.getX() && point.getX() < endPoint.getX()) ||
+                (point.getX() < startPoint.getX() && point.getX() > endPoint.getX()) ) {
+            double intercept = startPoint.getY() - slope * startPoint.getX(); // ordenada al origen
+            double cmp = point.getY() - intercept - slope * point.getX();
+            return cmp > -DELTA && cmp < DELTA;
+        }
+        return false;
     }
 
     @Override

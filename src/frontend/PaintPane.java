@@ -88,8 +88,7 @@ public class PaintPane extends BorderPane {
 	// Dibujar una figura
 	Point startPoint;
 
-	// Seleccionar una figura
-	Set<Figure> selectedFigures = new HashSet<>();
+
 
 	// StatusBar
 	StatusPane statusPane;
@@ -99,43 +98,39 @@ public class PaintPane extends BorderPane {
 		this.statusPane = statusPane;
 		slider.setShowTickLabels(true);
 		slider.setShowTickMarks(true);
-		slider.valueProperty().addListener((ov, oldValue, newValue) -> {
-			selectedFigures.forEach(figure -> figure.setBorderWidth(newValue.doubleValue()));
-		});
+		slider.valueProperty().addListener((ov, oldValue, newValue) -> canvasState.setSelectedBordersWidth(newValue.doubleValue()));
 		slider.setOnMouseDragged(event -> {
-		    if( !selectedFigures.isEmpty() ) {
-				selectedFigures.forEach(figure -> figure.setBorderWidth(slider.getValue()));
+		    if( canvasState.hasSelectedFigures() ) {
+				canvasState.setSelectedBordersWidth(slider.getValue());
 				redrawCanvas();
 			}
         });
-		borderColorPicker.setOnAction(event -> {
-			selectedFigures.forEach(figure -> figure.setBorderColor(borderColorPicker.getValue()));
-		});
+		borderColorPicker.setOnAction(event -> canvasState.setSelectedBordersColor(borderColorPicker.getValue()));
 
 		fillColorPicker.setOnAction(event -> {
-			if( !selectedFigures.isEmpty() ) {
-				selectedFigures.forEach(figure -> figure.setFillColor(fillColorPicker.getValue()));
+			if( canvasState.hasSelectedFigures() ) {
+				canvasState.setSelectedFillsColor(fillColorPicker.getValue());
 				redrawCanvas();
 			}
 
 		});
 		selectionButton.setOnAction(event -> selectedButton = null);
 		deleteButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				canvasState.removeSelected(selectedFigures);
-				selectedFigures.clear();
+			if( canvasState.hasSelectedFigures() ){
+				canvasState.removeSelected();
+				canvasState.clearSelectedFigures();
 				redrawCanvas();
 			}
 		});
 		toBackButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				canvasState.sendToBack(selectedFigures);
+			if( canvasState.hasSelectedFigures() ){
+				canvasState.sendToBack();
 				redrawCanvas();
 			}
 		});
 		toFrontButton.setOnAction(event -> {
-			if(!selectedFigures.isEmpty()){
-				canvasState.bringToFront(selectedFigures);
+			if( canvasState.hasSelectedFigures() ){
+				canvasState.bringToFront();
 				redrawCanvas();
 			}
 		});
@@ -160,14 +155,14 @@ public class PaintPane extends BorderPane {
 				return ;
 			}
 			if (selectionButton.isSelected()) {
-				selectedFigures.clear();
+				canvasState.clearSelectedFigures();
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
 				if (startPoint.getX() < endPoint.getX() && startPoint.getY() < endPoint.getY()) {
 					//Rectangle selection
 					Rectangle selection = new Rectangle(startPoint, endPoint);
 					for (Figure figure : canvasState.figures()) {
 						if (figure.isContained(selection)) {
-							selectedFigures.add(figure);
+							canvasState.addSelectedFigure(figure);
 							label.append(String.format(", %s", figure.toString()));
 						}
 					}
@@ -179,7 +174,7 @@ public class PaintPane extends BorderPane {
 							last = figure;
 					}
 					if (last != null) {
-						selectedFigures.add(last);
+						canvasState.addSelectedFigure(last);
 						label.append(last.toString());
 					} else
 						label = new StringBuilder("Ninguna figura encontrada");
@@ -216,11 +211,11 @@ public class PaintPane extends BorderPane {
 				Point eventPoint = new Point(event.getX(), event.getY());
 				double diffX = (eventPoint.getX() - startPoint.getX());
 				double diffY = (eventPoint.getY() - startPoint.getY());
-				if( !selectedFigures.isEmpty() ) {
-					selectedFigures.forEach(figure -> figure.move(diffX,diffY));
+				if( canvasState.hasSelectedFigures() ) {
+					canvasState.moveSelectedFigures(diffX,diffY);
 					startPoint = eventPoint;
+					redrawCanvas();
 				}
-				redrawCanvas();
 			}
 		});
 		setLeft(buttonsBox);
@@ -230,7 +225,7 @@ public class PaintPane extends BorderPane {
 	void redrawCanvas() {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(Figure figure : canvasState.figures()) {
-			if(selectedFigures.contains(figure)) {
+			if(canvasState.containsSelectedFigure(figure)) {
 				gc.setStroke(Color.RED);
 			} else {
 				gc.setStroke(figure.getBorderColor());

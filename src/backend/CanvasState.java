@@ -1,36 +1,62 @@
 package backend;
 
 import backend.model.Figure;
+import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class CanvasState {
 
     private final List<Figure> list = new LinkedList<>();
+    private final Set<Figure> selectedFigures = new HashSet<>();
 
     public void addFigure(Figure figure) {
         list.add(figure);
+    }
+    public void addSelectedFigure(Figure figure) {
+        selectedFigures.add(figure);
     }
 
     public Iterable<Figure> figures() {
         return list;
     }
 
-    public void removeSelected(Collection<Figure> c){
-        list.removeAll(c);
+    public void removeSelected(){
+        list.removeAll(selectedFigures);
     }
 
-    public void bringToFront(Collection<Figure> c){
-        removeSelected(c);
-        list.addAll(list.size(), c);
+    public boolean hasSelectedFigures(){
+        return !selectedFigures.isEmpty();
+    }
+    public void setSelectedBordersWidth(double width){
+        selectedFigures.forEach(figure -> figure.setBorderWidth(width));
+    }
+    public void setSelectedBordersColor(Color color){
+        selectedFigures.forEach(figure -> figure.setBorderColor(color));
+    }
+    public void setSelectedFillsColor(Color color){
+        selectedFigures.forEach(figure -> figure.setFillColor(color));
+    }
+    public void clearSelectedFigures(){
+        selectedFigures.clear();
     }
 
-    public void sendToBack(Collection<Figure> c){
-        removeSelected(c);
-        list.addAll(0, c);
+    public boolean containsSelectedFigure(Figure figure){
+        return selectedFigures.contains(figure);
+    }
+
+    public void moveSelectedFigures(double diffX, double diffY){
+        selectedFigures.forEach(figure -> figure.move(diffX,diffY));
+    }
+
+    public void bringToFront(){
+        removeSelected();
+        list.addAll(selectedFigures);
+    }
+
+    public void sendToBack(){
+        removeSelected();
+        list.addAll(0, selectedFigures);
     }
 
 }
