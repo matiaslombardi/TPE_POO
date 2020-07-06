@@ -71,6 +71,9 @@ public class PaintPane extends BorderPane {
 			return new Line(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
 		}
 	};
+	ToggleButton deleteButton = new ToggleButton("Borrar");
+	ToggleButton toBackButton = new ToggleButton("Al Fondo");
+	ToggleButton toFrontButton = new ToggleButton("Al Frente");
 
 	Label borderLabel = new Label("Borde");
 	final ColorPicker borderColorPicker = new ColorPicker(lineColor);
@@ -117,7 +120,26 @@ public class PaintPane extends BorderPane {
 
 		});
 		selectionButton.setOnAction(event -> selectedButton = null);
-		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, lineButton};
+		deleteButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				canvasState.removeSelected(selectedFigures);
+				selectedFigures.clear();
+				redrawCanvas();
+			}
+		});
+		toBackButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				canvasState.sendToBack(selectedFigures);
+				redrawCanvas();
+			}
+		});
+		toFrontButton.setOnAction(event -> {
+			if(!selectedFigures.isEmpty()){
+				canvasState.bringToFront(selectedFigures);
+				redrawCanvas();
+			}
+		});
+		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, lineButton, deleteButton, toBackButton, toFrontButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
 			tool.setMinWidth(90);
