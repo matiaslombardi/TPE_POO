@@ -1,6 +1,6 @@
 package backend.model;
 
-import javafx.scene.canvas.GraphicsContext;
+import backend.DrawData;
 import javafx.scene.paint.Color;
 
 public class Rectangle extends Figure {
@@ -49,11 +49,7 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public void drawSelf(GraphicsContext gc){
-        gc.fillRect(this.getTopLeft().getX(), this.getTopLeft().getY(),
-                Math.abs(this.getTopLeft().getX() - this.getBottomRight().getX()), Math.abs(this.getTopLeft().getY() - this.getBottomRight().getY()));
-        gc.strokeRect(this.getTopLeft().getX(), this.getTopLeft().getY(),
-                Math.abs(this.getTopLeft().getX() - this.getBottomRight().getX()), Math.abs(this.getTopLeft().getY() - this.getBottomRight().getY()));
+    public DrawData getData() {
+        return new DrawData(topLeft.getX(), topLeft.getY(), bottomRight.getX() - topLeft.getX(), bottomRight.getY() - topLeft.getY());
     }
-
 }

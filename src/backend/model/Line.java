@@ -1,6 +1,6 @@
 package backend.model;
 
-import javafx.scene.canvas.GraphicsContext;
+import backend.DrawData;
 import javafx.scene.paint.Color;
 
 public class Line extends Figure {
@@ -36,14 +36,15 @@ public class Line extends Figure {
         return rectangle.contains(startPoint) && rectangle.contains(endPoint);
     }
 
-    @Override
-    public void drawSelf(GraphicsContext gc) {
-        gc.strokeLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
-    }
 
     @Override
     public String toString() {
 
         return String.format("Línea [ %s , %s ]", startPoint, endPoint);
+    }
+
+    @Override
+    public DrawData getData() {
+        return new DrawData(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
     }
 }

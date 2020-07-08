@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.CanvasState;
+import backend.Observer;
 import backend.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,27 +30,47 @@ public class PaintPane extends BorderPane {
 	Color lineColor = Color.BLACK;
 	Color fillColor = Color.YELLOW;
 
+	//Drawers
+	Observer rectangleDrawer = data -> {
+		gc.fillRect(data.getFirstX(), data.getFirstY(),
+				data.getSecondX(), data.getSecondY());
+		gc.strokeRect(data.getFirstX(), data.getFirstY(),
+				data.getSecondX(), data.getSecondY());
+	};
+	Observer ellipseDrawer = data -> {
+		gc.fillOval(data.getFirstX(),data.getFirstY(),data.getSecondX(),data.getSecondY());
+		gc.strokeOval(data.getFirstX(),data.getFirstY(),data.getSecondX(),data.getSecondY());
+	};
+	Observer lineDrawer = data -> gc.strokeLine(data.getFirstX(),data.getFirstY(),data.getSecondX(),data.getSecondY());
 	// Botones Barra Izquierda
 	ToggleButton selectionButton = new ToggleButton("Seleccionar");
 	FigureButton rectangleButton = new FigureButton("Rectángulo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Rectangle(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
+			if(start.getX() < end.getX() && start.getY() < end.getY()) {
+				Rectangle toReturn = new Rectangle(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
+				toReturn.addObserver(rectangleDrawer);
+				return toReturn;
+			}
 			return null;
 		}
 	};
 	FigureButton circleButton = new FigureButton("Círculo") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Circle(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
+			Circle toReturn = new Circle(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, start.distanceTo(end));
+			toReturn.addObserver(ellipseDrawer);
+			return toReturn;
 		}
 	};
 	FigureButton squareButton = new FigureButton("Cuadrado") {
 		@Override
 		public Figure create(Point start, Point end) {
-			if(start.getX() < end.getX() && start.getY() < end.getY())
-				return new Square(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, new Point(end.getX(),start.getY() + end.getX() - start.getX()));
+			if(start.getX() < end.getX() && start.getY() < end.getY()) {
+				Square toReturn = new Square(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, new Point(end.getX(), start.getY() + end.getX() - start.getX()));
+				toReturn.addObserver(rectangleDrawer);
+				return toReturn;
+			}
 			return null;
 		}
 	};
@@ -60,7 +81,9 @@ public class PaintPane extends BorderPane {
 				double diffX = end.getX() - start.getX();
 				double diffY = end.getY() - start.getY();
 				Point center = new Point(end.getX() - diffX / 2, end.getY() - diffY / 2);
-				return new Ellipse(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
+				Ellipse toReturn = new Ellipse(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), center, diffX / 2, diffY / 2);
+				toReturn.addObserver(ellipseDrawer);
+				return toReturn;
 			}
 			return null;
 		}
@@ -68,7 +91,9 @@ public class PaintPane extends BorderPane {
 	FigureButton lineButton = new FigureButton("Línea") {
 		@Override
 		public Figure create(Point start, Point end) {
-			return new Line(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
+			Line toReturn = new Line(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
+			toReturn.addObserver(lineDrawer);
+			return toReturn;
 		}
 	};
 	ToggleButton deleteButton = new ToggleButton("Borrar");
@@ -236,7 +261,7 @@ public class PaintPane extends BorderPane {
 			}
             gc.setLineWidth(figure.getBorderWidth());
             gc.setFill(figure.getFillColor());
-			figure.drawSelf(gc);
+			figure.notifyObservers();
 		}
 	}
 

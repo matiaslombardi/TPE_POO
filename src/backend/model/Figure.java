@@ -1,12 +1,13 @@
 package backend.model;
 
+import backend.Observable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
 
-public abstract class Figure implements Movable {
+public abstract class Figure extends Observable implements Movable {
     private static final int NUM_START = 0;
     private static int idCounter = NUM_START;
     private final int id;
@@ -80,6 +81,5 @@ public abstract class Figure implements Movable {
         this.fillColor = fillColor;
     }
 
-    public abstract void drawSelf(GraphicsContext gc);
 
 }

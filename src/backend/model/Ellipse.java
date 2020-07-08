@@ -1,6 +1,6 @@
 package backend.model;
 
-import javafx.scene.canvas.GraphicsContext;
+import backend.DrawData;
 import javafx.scene.paint.Color;
 
 public class Ellipse extends Figure {
@@ -39,11 +39,6 @@ public class Ellipse extends Figure {
                 && rectangle.contains(up) && rectangle.contains(down);
     }
 
-    @Override
-    public void drawSelf(GraphicsContext gc) {
-        gc.fillOval(centerPoint.getX() - radiusX, centerPoint.getY() - radiusY, 2*radiusX, 2*radiusY);
-        gc.strokeOval(centerPoint.getX() - radiusX, centerPoint.getY() - radiusY, 2*radiusX, 2*radiusY);
-    }
 
     public double getRadiusX() {
         return radiusX;
@@ -52,5 +47,10 @@ public class Ellipse extends Figure {
     @Override
     public String toString() {
         return String.format("Elipse [Centro: %s, Radio X: %.2f, Radio Y: %.2f]", centerPoint, radiusX, radiusY);
+    }
+
+    @Override
+    public DrawData getData() {
+        return new DrawData(centerPoint.getX() - radiusX, centerPoint.getY() - radiusY, 2*radiusX, 2* radiusY);
     }
 }
