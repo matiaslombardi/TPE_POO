@@ -4,19 +4,19 @@ import backend.CanvasState;
 import backend.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PaintPane extends BorderPane {
 
@@ -82,6 +82,7 @@ public class PaintPane extends BorderPane {
 
 	Slider slider = new Slider(1, 50, 25);
 	Label fillLabel = new Label("Relleno");
+
 	//Seleccionar un botón
 	FigureButton selectedButton;
 
@@ -98,13 +99,14 @@ public class PaintPane extends BorderPane {
 		this.statusPane = statusPane;
 		slider.setShowTickLabels(true);
 		slider.setShowTickMarks(true);
-		slider.valueProperty().addListener((ov, oldValue, newValue) -> canvasState.setSelectedBordersWidth(newValue.doubleValue()));
-		slider.setOnMouseDragged(event -> {
-		    if( canvasState.hasSelectedFigures() ) {
+		EventHandler<MouseEvent> sliderEvent = mouseEvent -> {
+			if (canvasState.hasSelectedFigures()) {
 				canvasState.setSelectedBordersWidth(slider.getValue());
 				redrawCanvas();
 			}
-        });
+		};
+		slider.setOnMouseDragged(sliderEvent);
+		slider.setOnMouseClicked(sliderEvent);
 		borderColorPicker.setOnAction(event -> canvasState.setSelectedBordersColor(borderColorPicker.getValue()));
 
 		fillColorPicker.setOnAction(event -> {
@@ -163,9 +165,10 @@ public class PaintPane extends BorderPane {
 					for (Figure figure : canvasState.figures()) {
 						if (figure.isContained(selection)) {
 							canvasState.addSelectedFigure(figure);
-							label.append(String.format(", %s", figure.toString()));
+							label.append(String.format("%s ,", figure.toString()));
 						}
 					}
+					label.deleteCharAt(label.length() - 1);
 				} else if (startPoint.equals(endPoint)) {
 					//Normal click
 					Figure last = null;
@@ -176,9 +179,10 @@ public class PaintPane extends BorderPane {
 					if (last != null) {
 						canvasState.addSelectedFigure(last);
 						label.append(last.toString());
-					} else
-						label = new StringBuilder("Ninguna figura encontrada");
+					}
 				}
+				if( !canvasState.hasSelectedFigures() )
+					label = new StringBuilder("Ninguna figura encontrada");
 				statusPane.updateStatus(label.toString());
 			} else {
 				Figure newFigure = null;
