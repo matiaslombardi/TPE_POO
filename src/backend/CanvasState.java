@@ -1,14 +1,14 @@
 package backend;
 
 import backend.model.Figure;
-import backend.model.FillableFigure;
+import backend.model.Point;
 import javafx.scene.paint.Color;
 
 import java.util.*;
 
 public class CanvasState {
 
-    private final List<Figure> list = new LinkedList<>();
+    private final LinkedList<Figure> list = new LinkedList<>();
     private final Set<Figure> selectedFigures = new HashSet<>();
 
     public void addFigure(Figure figure) {
@@ -61,6 +61,18 @@ public class CanvasState {
     public void sendToBack(){
         removeSelected();
         list.addAll(0, selectedFigures);
+    }
+
+    public Figure selectContains(Point point){
+        Iterator<Figure> it = list.descendingIterator();
+        while (it.hasNext()){
+            Figure aux = it.next();
+            if(aux.contains(point)){
+                addSelectedFigure(aux);
+                return aux;
+            }
+        }
+        return null;
     }
 
 }
