@@ -1,6 +1,7 @@
 package backend;
 
 import backend.model.Figure;
+import backend.model.FillableFigure;
 import javafx.scene.paint.Color;
 
 import java.util.*;
@@ -32,10 +33,13 @@ public class CanvasState {
         selectedFigures.forEach(figure -> figure.setBorderWidth(width));
     }
     public void setSelectedBordersColor(Color color){
-        selectedFigures.forEach(figure -> figure.setBorderColor(color));
+        selectedFigures.forEach(figure -> figure.setColorProperty(ColorProperty.BORDER_COLOR, color));
     }
     public void setSelectedFillsColor(Color color){
-        selectedFigures.forEach(figure -> figure.setFillColor(color));
+        selectedFigures.forEach(figure -> {
+            if (figure.isFillable())
+                figure.setColorProperty(ColorProperty.FILL_COLOR, color);
+        });
     }
     public void clearSelectedFigures(){
         selectedFigures.clear();

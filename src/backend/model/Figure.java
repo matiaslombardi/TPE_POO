@@ -1,36 +1,42 @@
 package backend.model;
 
+import backend.ColorProperty;
 import backend.Observable;
-import javafx.scene.canvas.GraphicsContext;
+import backend.Selector;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
 public abstract class Figure extends Observable implements Movable {
     private static final int NUM_START = 0;
     private static int idCounter = NUM_START;
-    private final int id;
     private static int getAndIncrement(){
         return idCounter++;
     }
-    private Color borderColor = Color.BLACK;
-    private double borderWidth = 25;
 
-    private Color fillColor = Color.YELLOW;
+    private final int id;
+    private double borderWidth;
+    private final Map<ColorProperty, Color> colorPropertyMap = new HashMap<>();
+
     abstract Point[] getPoints();
     public abstract boolean contains(Point point);
-    public abstract boolean isContained(Rectangle rectangle);
+    public abstract boolean isContained(Selector selector);
 
-    public Figure(Color fillColor, Color borderColor, double borderWidth) {
-        this();
-        this.fillColor = fillColor;
-        this.borderColor = borderColor;
+    public Figure(Color borderColor, double borderWidth) {
+        id = getAndIncrement();
         this.borderWidth = borderWidth;
+        colorPropertyMap.put(ColorProperty.BORDER_COLOR, borderColor);
     }
 
-    public Figure() {
-        id = getAndIncrement();
+    public void setColorProperty(ColorProperty colorProperty, Color color) {
+        colorPropertyMap.put(colorProperty, color);
+    }
+
+    public Color getColorProperty(ColorProperty colorProperty) {
+        return colorPropertyMap.getOrDefault(colorProperty, Color.BLACK);
     }
 
     @Override
@@ -57,29 +63,13 @@ public abstract class Figure extends Observable implements Movable {
         }
     }
 
-    public Color getBorderColor() {
-        return borderColor;
-    }
-
     public double getBorderWidth() {
         return borderWidth;
-    }
-
-    public void setBorderColor(Color color){
-        borderColor = color;
     }
 
     public void setBorderWidth(double width){
         borderWidth = width;
     }
 
-    public Color getFillColor() {
-        return fillColor;
-    }
-
-    public void setFillColor(Color fillColor) {
-        this.fillColor = fillColor;
-    }
-
-
+    public abstract boolean isFillable();
 }

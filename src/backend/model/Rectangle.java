@@ -1,20 +1,15 @@
 package backend.model;
 
 import backend.DrawData;
+import backend.Selector;
 import javafx.scene.paint.Color;
 
-public class Rectangle extends Figure {
+public class Rectangle extends FillableFigure {
 
     private final Point topLeft, bottomRight;
 
     public Rectangle(Color fillColor, Color borderColor, double borderWidth, Point topLeft, Point bottomRight) {
         super(fillColor, borderColor, borderWidth);
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
-    }
-
-    public Rectangle(Point topLeft, Point bottomRight) {
-        super();
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
     }
@@ -44,8 +39,8 @@ public class Rectangle extends Figure {
     }
 
     @Override
-    public boolean isContained(Rectangle rectangle) {
-        return rectangle.contains(topLeft) && rectangle.contains(bottomRight);
+    public boolean isContained(Selector selector) {
+        return selector.contains(topLeft) && selector.contains(bottomRight);
     }
 
     @Override

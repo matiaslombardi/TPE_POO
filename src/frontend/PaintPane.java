@@ -1,11 +1,10 @@
 package frontend;
 
 import backend.CanvasState;
+import backend.ColorProperty;
 import backend.Observer;
+import backend.Selector;
 import backend.model.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -17,7 +16,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.*;
 
 public class PaintPane extends BorderPane {
 
@@ -91,7 +89,7 @@ public class PaintPane extends BorderPane {
 	FigureButton lineButton = new FigureButton("Línea") {
 		@Override
 		public Figure create(Point start, Point end) {
-			Line toReturn = new Line(fillColorPicker.getValue(), borderColorPicker.getValue(), slider.getValue(), start, end);
+			Line toReturn = new Line(borderColorPicker.getValue(), slider.getValue(), start, end);
 			toReturn.addObserver(lineDrawer);
 			return toReturn;
 		}
@@ -113,8 +111,6 @@ public class PaintPane extends BorderPane {
 
 	// Dibujar una figura
 	Point startPoint;
-
-
 
 	// StatusBar
 	StatusPane statusPane;
@@ -178,17 +174,15 @@ public class PaintPane extends BorderPane {
 		canvas.setOnMousePressed(event -> startPoint = new Point(event.getX(), event.getY()));
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
-			if(startPoint == null) {
-				return ;
-			}
+			if(startPoint == null) return ;
 			if (selectionButton.isSelected()) {
 				canvasState.clearSelectedFigures();
 				StringBuilder label = new StringBuilder("Se seleccionó: ");
 				if (startPoint.getX() < endPoint.getX() && startPoint.getY() < endPoint.getY()) {
 					//Rectangle selection
-					Rectangle selection = new Rectangle(startPoint, endPoint);
+					Selector selector = point -> point.getX() > startPoint.getX() && point.getX() < endPoint.getX() && point.getY() > startPoint.getY() && point.getY() < endPoint.getY();
 					for (Figure figure : canvasState.figures()) {
-						if (figure.isContained(selection)) {
+						if (figure.isContained(selector)) {
 							canvasState.addSelectedFigure(figure);
 							label.append(String.format("%s ,", figure.toString()));
 						}
@@ -210,7 +204,7 @@ public class PaintPane extends BorderPane {
 					label = new StringBuilder("Ninguna figura encontrada");
 				statusPane.updateStatus(label.toString());
 			} else {
-				Figure newFigure = null;
+				Figure newFigure;
 				if (selectedButton != null) {
 					newFigure = selectedButton.create(startPoint, endPoint);
 					if (newFigure != null) canvasState.addFigure(newFigure);
@@ -254,13 +248,13 @@ public class PaintPane extends BorderPane {
 	void redrawCanvas() {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(Figure figure : canvasState.figures()) {
-			if(canvasState.containsSelectedFigure(figure)) {
+			if(canvasState.containsSelectedFigure(figure))
 				gc.setStroke(Color.RED);
-			} else {
-				gc.setStroke(figure.getBorderColor());
-			}
+			else
+				gc.setStroke(figure.getColorProperty(ColorProperty.BORDER_COLOR));
             gc.setLineWidth(figure.getBorderWidth());
-            gc.setFill(figure.getFillColor());
+			if (figure.isFillable())
+				gc.setFill(figure.getColorProperty(ColorProperty.FILL_COLOR));
 			figure.notifyObservers();
 		}
 	}

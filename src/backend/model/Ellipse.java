@@ -1,9 +1,10 @@
 package backend.model;
 
 import backend.DrawData;
+import backend.Selector;
 import javafx.scene.paint.Color;
 
-public class Ellipse extends Figure {
+public class Ellipse extends FillableFigure {
 
     private final double radiusX, radiusY;
     private final Point centerPoint;
@@ -30,13 +31,13 @@ public class Ellipse extends Figure {
     }
 
     @Override
-    public boolean isContained(Rectangle rectangle) {
+    public boolean isContained(Selector selector) {
         Point left = new Point(centerPoint.getX() - radiusX, centerPoint.getY());
         Point right = new Point(centerPoint.getX() + radiusX, centerPoint.getY());
         Point up = new Point(centerPoint.getX(), centerPoint.getY() + radiusY);
         Point down = new Point(centerPoint.getX(), centerPoint.getY() - radiusY);
-        return rectangle.contains(left) && rectangle.contains(right)
-                && rectangle.contains(up) && rectangle.contains(down);
+        return selector.contains(left) && selector.contains(right)
+                && selector.contains(up) && selector.contains(down);
     }
 
 
