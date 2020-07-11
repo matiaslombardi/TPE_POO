@@ -7,8 +7,8 @@ public abstract class Observable {
     public void notifyObservers(){
         appObservers.forEach(observer -> observer.update(getData()));
     }
-    public void addObserver(Observer listener){
-        appObservers.add(listener);
+    public void addObserver(Observer observer){
+        appObservers.add(observer);
     }
     public abstract DrawData getData();
 }

@@ -21,7 +21,7 @@ public abstract class Figure extends Observable implements Movable {
     private double borderWidth;
     private final Map<ColorProperty, Color> colorPropertyMap = new HashMap<>();
 
-    abstract Point[] getPoints();
+    protected abstract Point[] getPoints();
     public abstract boolean contains(Point point);
     public abstract boolean isContained(Selector selector);
 

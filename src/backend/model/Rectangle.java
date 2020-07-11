@@ -28,7 +28,7 @@ public class Rectangle extends FillableFigure {
     }
 
     @Override
-    Point[] getPoints() {
+    protected Point[] getPoints() {
         return new Point[]{topLeft,bottomRight};
     }
 

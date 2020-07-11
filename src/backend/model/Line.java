@@ -18,7 +18,7 @@ public class Line extends Figure {
     }
 
     @Override
-    Point[] getPoints() {
+    protected Point[] getPoints() {
         return new Point[]{startPoint,endPoint};
     }
 
