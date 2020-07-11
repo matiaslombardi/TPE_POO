@@ -19,14 +19,26 @@ import javafx.scene.paint.Color;
 
 public class PaintPane extends BorderPane {
 
+	// Constants
+	private final static double CANVAS_WIDTH = 800;
+	private final static double CANVAS_HEIGHT = 600;
+	private final static double SLIDER_MIN_VALUE = 1;
+	private final static double SLIDER_MAX_VALUE = 50;
+	private final static double SLIDER_INITIAL_VALUE = 25;
+	private final static double TOOL_MIN_WIDTH = 90;
+	private final static double VBOX_SPACING = 10;
+	private final static double VBOX_WIDTH = 100;
+	private final static double PADDING_INSETS_VALUE = 5;
+	private final static Color SELECTED_COLOR = Color.RED;
+	private final static Color LINE_DEFAULT_COLOR = Color.BLACK;
+	private final static Color FILL_DEFAULT_COLOR = Color.YELLOW;
+
 	// BackEnd
 	private CanvasState canvasState;
 
 	// Canvas y relacionados
-	private Canvas canvas = new Canvas(800, 600);
+	private Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 	private GraphicsContext gc = canvas.getGraphicsContext2D();
-	private Color lineColor = Color.BLACK;
-	private Color fillColor = Color.YELLOW;
 
 	//Drawers
 	private Observer rectangleDrawer = data -> {
@@ -103,11 +115,11 @@ public class PaintPane extends BorderPane {
 	private ToggleButton toFrontButton = new ToggleButton("Al Frente");
 
 	private Label borderLabel = new Label("Borde");
-	private final ColorPicker borderColorPicker = new ColorPicker(lineColor);
+	private final ColorPicker borderColorPicker = new ColorPicker(LINE_DEFAULT_COLOR);
 
-	private final ColorPicker fillColorPicker = new ColorPicker(fillColor);
+	private final ColorPicker fillColorPicker = new ColorPicker(FILL_DEFAULT_COLOR);
 
-	private Slider borderWidthSlider = new Slider(1, 50, 25);
+	private Slider borderWidthSlider = new Slider(SLIDER_MIN_VALUE, SLIDER_MAX_VALUE, SLIDER_INITIAL_VALUE);
 	private Label fillLabel = new Label("Relleno");
 
 	//Seleccionar un botón
@@ -133,7 +145,6 @@ public class PaintPane extends BorderPane {
 		borderWidthSlider.setOnMouseDragged(sliderEvent);
 		borderWidthSlider.setOnMouseClicked(sliderEvent);
 		borderColorPicker.setOnAction(event -> canvasState.setSelectedBordersColor(borderColorPicker.getValue()));
-
 		fillColorPicker.setOnAction(event -> {
 			if( canvasState.hasSelectedFigures() ) {
 				canvasState.setSelectedFillsColor(fillColorPicker.getValue());
@@ -164,17 +175,16 @@ public class PaintPane extends BorderPane {
 		ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton, squareButton, ellipseButton, lineButton, deleteButton, toBackButton, toFrontButton};
 		ToggleGroup tools = new ToggleGroup();
 		for (ToggleButton tool : toolsArr) {
-			tool.setMinWidth(90);
+			tool.setMinWidth(TOOL_MIN_WIDTH);
 			tool.setToggleGroup(tools);
 			tool.setCursor(Cursor.HAND);
 		}
-		VBox buttonsBox = new VBox(10);
+		VBox buttonsBox = new VBox(VBOX_SPACING);
 		buttonsBox.getChildren().addAll(toolsArr);
 		buttonsBox.getChildren().addAll(borderLabel, borderWidthSlider, borderColorPicker, fillLabel, fillColorPicker);
-		buttonsBox.setPadding(new Insets(5));
+		buttonsBox.setPadding(new Insets(PADDING_INSETS_VALUE));
 		buttonsBox.setStyle("-fx-background-color: #999");
-		buttonsBox.setPrefWidth(100);
-		gc.setLineWidth(1);
+		buttonsBox.setPrefWidth(VBOX_WIDTH);
 		canvas.setOnMousePressed(event -> startPoint = new Point(event.getX(), event.getY()));
 		canvas.setOnMouseReleased(event -> {
 			Point endPoint = new Point(event.getX(), event.getY());
@@ -254,7 +264,7 @@ public class PaintPane extends BorderPane {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(Figure figure : canvasState.figures()) {
 			if(canvasState.containsSelectedFigure(figure))
-				gc.setStroke(Color.RED);
+				gc.setStroke(SELECTED_COLOR);
 			else
 				gc.setStroke(figure.getColorProperty(ColorProperty.BORDER_COLOR));
             gc.setLineWidth(figure.getBorderWidth());
@@ -276,7 +286,5 @@ public class PaintPane extends BorderPane {
 			super.fire();
 			selectedButton = this.isSelected()? this: null;
 		}
-
 	}
-
 }

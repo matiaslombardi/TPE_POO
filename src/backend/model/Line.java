@@ -22,6 +22,8 @@ public class Line extends Figure {
         return new Point[]{startPoint,endPoint};
     }
 
+    //To check if a line contains a point it requires a lot of precision so this method
+    //verifies this for lines that are not vertical and for points that don´t match with the borders
     @Override
     public boolean contains(Point point) {
         if( (point.getX() > startPoint.getX() && point.getX() < endPoint.getX()) ) {
