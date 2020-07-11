@@ -18,8 +18,9 @@ public class CanvasState {
         selectedFigures.add(figure);
     }
 
+    //This method returns a copy for safety reasons
     public Iterable<Figure> figures() {
-        return list;
+        return new ArrayList<>(list);
     }
 
     public void removeSelected(){
@@ -63,6 +64,7 @@ public class CanvasState {
         list.addAll(0, selectedFigures);
     }
 
+    //To select only one figure
     public Figure selectContains(Point point){
         Iterator<Figure> it = list.descendingIterator();
         while (it.hasNext()){

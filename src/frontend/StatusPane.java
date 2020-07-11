@@ -20,4 +20,12 @@ public class StatusPane extends BorderPane {
 		statusLabel.setText(text);
 	}
 
+	public void errorBackground(){
+		setStyle("-fx-background-color: #FF0000");
+	}
+
+	public void normalBackground(){
+		setStyle("-fx-background-color: #4EBCF8");
+	}
+
 }

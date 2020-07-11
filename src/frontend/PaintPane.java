@@ -51,6 +51,7 @@ public class PaintPane extends BorderPane {
 				toReturn.addObserver(rectangleDrawer);
 				return toReturn;
 			}
+			updateLabelError("Rectangle must be created from top left to bottom right");
 			return null;
 		}
 	};
@@ -70,6 +71,7 @@ public class PaintPane extends BorderPane {
 				toReturn.addObserver(rectangleDrawer);
 				return toReturn;
 			}
+			updateLabelError("Square must be created from top left to bottom right");
 			return null;
 		}
 	};
@@ -84,6 +86,7 @@ public class PaintPane extends BorderPane {
 				toReturn.addObserver(ellipseDrawer);
 				return toReturn;
 			}
+			updateLabelError("Ellipse must be created from top left to bottom right");
 			return null;
 		}
 	};
@@ -224,6 +227,7 @@ public class PaintPane extends BorderPane {
 			} else {
 				statusPane.updateStatus(eventPoint.toString());
 			}
+			statusPane.normalBackground();
 		});
 		canvas.setOnMouseDragged(event -> {
 			if(selectionButton.isSelected()) {
@@ -239,6 +243,11 @@ public class PaintPane extends BorderPane {
 		});
 		setLeft(buttonsBox);
 		setRight(canvas);
+	}
+
+	private void updateLabelError(String message){
+		statusPane.updateStatus(message);
+		statusPane.errorBackground();
 	}
 
 	private void redrawCanvas() {
